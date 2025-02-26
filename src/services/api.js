@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://appointment-booking-backend-h0lv.onrender.com/';
+const API_URL = 'https://appointment-booking-backend-h0lv.onrender.com';
 
 // Create an Axios instance with token
 const api = (token) =>
