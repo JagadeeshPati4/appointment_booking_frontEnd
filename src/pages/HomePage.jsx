@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Button, Container } from "@mui/material";
 import ImageSlider from "../components/ImageSlider";
 import FeaturesSection from "./FeaturesPage";
+import { Link } from "react-router-dom";
 
 
 
@@ -34,6 +35,8 @@ const Home = () => {
             get ready to feel fabulous. Your health is just a click away!
           </Typography>
           <Button
+           component={Link}
+           to="/doctors"
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
