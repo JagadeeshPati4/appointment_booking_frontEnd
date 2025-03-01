@@ -36,8 +36,9 @@ const AppointmentList = () => {
   // Fetch Appointments
   const fetchAppointments = async () => {
     try {
-      console.log('user.id',user._id);
-      const response = await getAppointmentsUserId(user._id,token);
+
+      console.log('user.id',user.id);
+      const response = await getAppointmentsUserId(user.id,token);
       if (response.status === 200) {
         setAppointments(response.data);
       }
@@ -50,13 +51,13 @@ const AppointmentList = () => {
 
   useEffect(() => {
     fetchAppointments();
-  }, [user?._id]);
+  }, [user?.id]);
 
   // Handle Delete
   const handleDelete = async () => {
     try {
-      await deleteAppointment(appointmentToDelete._id, token);
-      setAppointments(appointments.filter((apt) => apt._id !== appointmentToDelete._id));
+      await deleteAppointment(appointmentToDelete.id, token);
+      setAppointments(appointments.filter((apt) => apt.id !== appointmentToDelete.id));
       setNotification({ open: true, message: "Appointment deleted successfully!", severity: "success" });
     } catch (error) {
       setNotification({ open: true, message: "Failed to delete appointment", severity: "error" });
