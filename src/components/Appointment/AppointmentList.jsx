@@ -57,7 +57,7 @@ const AppointmentList = () => {
   const handleDelete = async () => {
     try {
       await deleteAppointment(appointmentToDelete.id, token);
-      setAppointments(appointments.filter((apt) => apt.id !== appointmentToDelete.id));
+      setAppointments(appointments.filter((apt) => apt._id !== appointmentToDelete._id));
       setNotification({ open: true, message: "Appointment deleted successfully!", severity: "success" });
     } catch (error) {
       setNotification({ open: true, message: "Failed to delete appointment", severity: "error" });
