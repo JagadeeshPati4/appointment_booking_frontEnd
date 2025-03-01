@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 const API_URL = 'https://appointment-booking-backend-h0lv.onrender.com';
+// const API_URL ='http://localhost:3000'
+
 
 // Create an Axios instance with token
 const api = (token) =>
@@ -44,12 +46,19 @@ export const updateAppointment = async (appointmentId, appointmentData, token) =
   return response;
 };
 
+export const getAppointmentsUserId = async (userId, token) => {
+  console.log('getAppointmentsUserId api',userId);
+  const response = await api(token).get(`/appointments/user/${userId}`);
+  return response;
+};
+
+
+
 export const deleteAppointment = async (appointmentId, token) => {
   console.log('appointmentId in delete api',appointmentId);
   const response = await api(token).delete(`/appointments/deleteAppointment/${appointmentId}`);
   return response;
 };
-
 // User Authentication APIs (No token required)
 export const registerUser = async (userData) => {
   const response = await axios.post(`${API_URL}/users/register`, userData, { withCredentials: true });
@@ -60,6 +69,12 @@ export const loginUser = async (credentials) => {
   const response = await axios.post(`${API_URL}/users/login`, credentials, { withCredentials: true });
   return response;
 };
+
+export const getUser = async (token) => {
+  const response =await api(token).get(`${API_URL}/users/getUser`, { withCredentials: true });
+  return response;
+};
+
 
 // Admin APIs for Doctors (Requires token)
 export const addDoctor = async (doctorData, userDetails, token) => {

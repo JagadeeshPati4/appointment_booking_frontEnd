@@ -56,7 +56,7 @@ const DoctorForm = ({ doctor, onClose, setDoctors, doctors }) => {
       setNotification({ open: true, message: `Doctor ${doctor ? "updated" : "added"} successfully!`, severity: "success" });
       onClose();
     } catch (error) {
-      setNotification({ open: true, message: "Operation failed!", severity: "error" });
+      setNotification({ open: true, message: "Operation failed! reload page", severity: "error" });
     }
   };
 

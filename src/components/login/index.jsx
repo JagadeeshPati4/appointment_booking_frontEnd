@@ -48,10 +48,10 @@ const AuthForm = () => {
         setNotification({ open: true, message: "Authentication successful!", severity: "success" });
         setTimeout(() => navigate("/"), 1000);
       } else {
-        setNotification({ open: true, message: result.message || "Authentication failed!", severity: "error" });
+        setNotification({ open: true, message: result.data.message || "Authentication failed!", severity: "error" });
       }
     } catch (error) {
-      setNotification({ open: true, message: error.message, severity: "error" });
+      setNotification({ open: true, message: error.response.data.message, severity: "error" });
     } finally {
       setLoading(false);
     }

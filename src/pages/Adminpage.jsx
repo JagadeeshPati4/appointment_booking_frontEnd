@@ -18,7 +18,7 @@ import {
 import DoctorForm from "../components/DocterForm/index";
 import { addDoctor, updateDoctor, deleteDoctor, getAllDoctors } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import Notification from "../components/Notification"; // Import Notification component
+import Notification from "../components/Notification"; 
 
 const DoctorManagement = () => {
   const { user,token } = useContext(AuthContext);

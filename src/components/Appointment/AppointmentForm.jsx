@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/AuthContext";
 import moment from "moment";
 
 const AppointmentForm = ({ doctorId, selectedDate, selectedSlot, onClose, existingAppointment, refreshAppointments }) => {
-  const { token } = useContext(AuthContext);
+  const { token,user } = useContext(AuthContext);
 
   const [patientName, setPatientName] = useState(existingAppointment?.patientName || "");
   const [appointmentType, setAppointmentType] = useState(existingAppointment?.appointmentType || "");
@@ -21,6 +21,7 @@ const AppointmentForm = ({ doctorId, selectedDate, selectedSlot, onClose, existi
 
     const appointmentData = {
       doctorId,
+      userId: user._id,
       date: formattedDate,
       duration: 30,
       appointmentType,
@@ -30,6 +31,7 @@ const AppointmentForm = ({ doctorId, selectedDate, selectedSlot, onClose, existi
 
     try {
       let response;
+      console.log("appointment:", appointmentData);
       if (existingAppointment) {
         console.log("Updating appointment ID:", existingAppointment._id);
         response = await updateAppointment(existingAppointment._id, appointmentData, token);
@@ -47,10 +49,10 @@ const AppointmentForm = ({ doctorId, selectedDate, selectedSlot, onClose, existi
           onClose();
         }, 1000);
       } else {
-        setNotification({ open: true, message: "Failed to process appointment", severity: "error" });
+        setNotification({ open: true, message:response.data.message, severity: "error" });
       }
     } catch (err) {
-      setNotification({ open: true, message: "An error occurred while processing the appointment", severity: "error" });
+      setNotification({ open: true, message: err.response.data.message, severity: "error" });
     } finally {
       setLoading(false);
     }

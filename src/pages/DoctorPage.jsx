@@ -21,6 +21,8 @@ import {
   Container,
 } from "@mui/material";
 import moment from "moment";
+import dayjs from "dayjs";
+import Notification from "../components/Notification"; 
 import { AuthContext } from "../context/AuthContext";
 import { getDoctor } from "../services/api";
 
@@ -33,7 +35,8 @@ const DoctorPage = () => {
   const [doctorInfo, setDoctorInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false); // ✅ State for refreshing slots
-
+  const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
+  
   useEffect(() => {
     const fetchDoctorInfo = async () => {
       try {
@@ -42,6 +45,7 @@ const DoctorPage = () => {
           setDoctorInfo(response.data);
         }
       } catch (error) {
+        setNotification({ open: true, message: error.response.data.message, severity: "error" });
         console.error("Error fetching doctor info:", error);
       } finally {
         setLoading(false);
@@ -64,7 +68,7 @@ const DoctorPage = () => {
     setRefresh(!refresh); // ✅ Trigger slot refresh
     handleClose();
   };
-
+  console.log('dayjs().add(1, "MONTH")}',dayjs().add(1, "MONTH").format('YYYY-MM-DD'));
   const defaultImage =
     "https://img.freepik.com/free-vector/doctor-medical-healthcare-pfrofessional-character-vector_53876-175176.jpg?t=st=1740537937~exp=1740541537~hmac=457a588eb6191433d3d652a86e971830b45802b023e78dac697dee4e5f5a8f8d&w=740";
 
@@ -102,6 +106,8 @@ const DoctorPage = () => {
                   <DatePicker
                     label="Select Date"
                     value={selectedDate}
+                    minDate={moment()}
+                    maxDate={moment().add(1, "month")} // 1 month from today
                     onChange={(date) => setSelectedDate(date)}
                     renderInput={(params) => <TextField {...params} fullWidth />}
                   />
@@ -134,6 +140,7 @@ const DoctorPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </Container>
   );
 };

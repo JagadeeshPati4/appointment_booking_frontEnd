@@ -3,11 +3,15 @@ import { getDoctors } from '../../services/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardMedia, Typography, Grid, Box,CircularProgress,Button } from "@mui/material";
 import {AuthContext} from '../../context/AuthContext';
+import Notification from '../Notification';
+
 
 const DoctorList = () => {
   const { user,token } = useContext(AuthContext);
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +45,7 @@ const DoctorList = () => {
           </Grid>
         ))}
       </Grid>
+      <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </Box>
   );
 };

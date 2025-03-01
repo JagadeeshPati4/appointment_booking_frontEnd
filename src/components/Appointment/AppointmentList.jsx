@@ -16,13 +16,13 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
-import { getAppointments, deleteAppointment } from "../../services/api";
+import { getAppointmentsUserId, deleteAppointment } from "../../services/api";
 import { AuthContext } from "../../context/AuthContext";
 import Notification from "../Notification/index";
 import AppointmentForm from "./AppointmentForm";
 
 const AppointmentList = () => {
-  const { token } = useContext(AuthContext);
+  const { token,user } = useContext(AuthContext);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -36,12 +36,13 @@ const AppointmentList = () => {
   // Fetch Appointments
   const fetchAppointments = async () => {
     try {
-      const response = await getAppointments(token);
+      console.log('user.id',user._id);
+      const response = await getAppointmentsUserId(user._id,token);
       if (response.status === 200) {
         setAppointments(response.data);
       }
     } catch (error) {
-      setNotification({ open: true, message: "Failed to load appointments", severity: "error" });
+      setNotification({ open: true, message: error.response.data.message, severity: "error" });
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,7 @@ const AppointmentList = () => {
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [user?._id]);
 
   // Handle Delete
   const handleDelete = async () => {

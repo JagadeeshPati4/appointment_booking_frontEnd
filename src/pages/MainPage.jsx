@@ -1,7 +1,9 @@
-import React from "react";
+import React ,{ lazy, Suspense } from "react";
 import { Outlet } from "react-router-dom";
-import Navbar from "../components/navbar";
 import { Box } from "@mui/material";
+
+const  Navbar = lazy(()=> import("../components/navbar"));
+const Loading = lazy(()=> import("../components/Loading"));
 
 const MainPage = () => {
   return (
@@ -25,11 +27,13 @@ const MainPage = () => {
       }}
     >
       {/* Fixed Navbar */}
+      <Suspense fallback={<Loading />}>
       <Box sx={{ position: "fixed", top: 0, width: "100%", zIndex: 1000 }}>
         <Navbar />
       </Box>
 
       <Outlet />
+      </Suspense>
     </Box>
   );
 };

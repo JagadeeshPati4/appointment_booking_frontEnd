@@ -2,6 +2,7 @@ import React, { useEffect, useState,useContext } from 'react';
 import { getDoctorSlots } from '../../services/api';
 import { Button, CircularProgress, Grid } from '@mui/material';
 import {AuthContext} from '../../context/AuthContext';
+import Notification from '../Notification';
 
 import moment from 'moment';
 
@@ -9,6 +10,8 @@ const DoctorSlots = ({ doctorId, selectedDate, onSlotSelect }) => {
   const { user,token } = useContext(AuthContext);
   const [slots, setSlots] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
+  
 
   useEffect(() => {
     const fetchSlots = async () => {
@@ -40,6 +43,7 @@ const DoctorSlots = ({ doctorId, selectedDate, onSlotSelect }) => {
           </Button>
         </Grid>
       ))}
+      <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </Grid>
   );
 };

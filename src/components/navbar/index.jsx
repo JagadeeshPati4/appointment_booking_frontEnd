@@ -25,8 +25,8 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    navigate('/home'); 
     logout(); 
-    navigate('/'); 
   };
 
   const navLinks = [
@@ -102,7 +102,7 @@ const Navbar = () => {
                 Get Started
               </Button>
             )}
-             {isLoggedIn && user.isAdmin && (
+             {isLoggedIn && user?.isAdmin && (
               <Button
                 component={Link}
                 to="/admin"
@@ -163,7 +163,7 @@ const Navbar = () => {
                 sx={{ color: "#80e27e", fontWeight: "bold" }}
               />
             </ListItem>}
-            {isLoggedIn && user.isAdmin && ( <ListItem
+            {isLoggedIn && user?.isAdmin && ( <ListItem
               button
               component={Link}
               to="/admin"
