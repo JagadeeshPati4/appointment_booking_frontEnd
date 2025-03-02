@@ -14,29 +14,34 @@ import {
   DialogContent,
   DialogActions,
   Stack,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Divider,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import DoctorForm from "../components/DocterForm/index";
 import { addDoctor, updateDoctor, deleteDoctor, getAllDoctors } from "../services/api";
 import { AuthContext } from "../context/AuthContext";
-import Notification from "../components/Notification"; 
+import Notification from "../components/Notification";
 
 const DoctorManagement = () => {
-  const { user,token } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext);
   const [doctors, setDoctors] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctorToDelete, setDoctorToDelete] = useState(null);
-
   const [notification, setNotification] = useState({ open: false, message: "", severity: "success" });
 
-  // Fetch Doctors
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const fetchDoctors = async () => {
     try {
-      const response = await getAllDoctors(user,token);
-      console.log('response of all docters',response);
-      setDoctors(response.status == 200 ? response.data : []); // Ensure it's an array
+      const response = await getAllDoctors(user, token);
+      setDoctors(response.status === 200 ? response.data : []);
     } catch (error) {
       setNotification({ open: true, message: "Failed to load doctors", severity: "error" });
     }
@@ -46,17 +51,9 @@ const DoctorManagement = () => {
     fetchDoctors();
   }, []);
 
-  const handleChangePage = (_, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
   const handleDelete = async (id) => {
-    console.log('id dele',id);
-    console.log('user dele',user);
     try {
-      await deleteDoctor(id, user,token);
+      await deleteDoctor(id, user, token);
       setDoctors(doctors.filter((doc) => doc._id !== id));
       setNotification({ open: true, message: "Doctor deleted successfully!", severity: "success" });
     } catch (error) {
@@ -65,79 +62,81 @@ const DoctorManagement = () => {
     setOpenDialog(false);
   };
 
-  const handleAddOrUpdateDoctor = async (doctor) => {
-    try {
-      if (doctor._id) {
-        console.log('doctor is present ');
-        console.log('doctor',doctor);
-        await updateDoctor(doctor._id,doctor, user,token);
-        setNotification({ open: true, message: "Doctor updated successfully!", severity: "success" });
-      } else {
-        console.log('doctor is not  present ');
-        console.log('doctor',doctor);
-        console.log('token',token);
-        console.log('addDoctor',addDoctor);
-        await addDoctor(doctor, user,token);
-        setNotification({ open: true, message: "Doctor added successfully!", severity: "success" });
-      }
-      await fetchDoctors(); // Fetch updated doctor list
-    } catch (error) {
-      setNotification({ open: true, message: "Operation failed!", severity: "error" });
-    }
-  };
-
   return (
-    <Box sx={{ p: 3, width: "80%", maxWidth: "80%", margin: "auto", backgroundColor: "white", borderRadius: 3, boxShadow: 1 }}>
-      <Typography variant="h4" sx={{ mb: 3, color: "black" }}>Doctor Management</Typography>
-      <Button variant="contained" color="primary" onClick={() => setSelectedDoctor({})} sx={{ mb: 2 }}>Add Doctor</Button>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Specialization</TableCell>
-            <TableCell>Working Hours</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+    <Box sx={{ p: 3, marginTop:5, marginBottom:5, maxWidth: {'xs':'70%','md':'100%'}, mx: "auto", bgcolor: "white", borderRadius: 3, boxShadow: 1 }}>
+      <Typography variant="h4" sx={{ mb: 3,color:'Highlight', textAlign: "center" }}>Doctor Management</Typography>
+      <Button variant="contained" color="primary" onClick={() => setSelectedDoctor({})} sx={{ mb: 2, width: isMobile ? "100%" : "auto" }}>Add Doctor</Button>
+      
+      {isMobile ? (
+        <Box>
           {doctors.length > 0 ? (
             doctors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((doc) => (
-              <TableRow key={doc._id}>
-                <TableCell>{doc._id}</TableCell>
-                <TableCell>{doc.name}</TableCell>
-                <TableCell>{doc.specialization}</TableCell>
-                <TableCell>{doc.workingHours?.start} - {doc.workingHours?.end}</TableCell>
-                <TableCell>
-                  <Stack direction="row" spacing={1}>
-                    <Button variant="contained" color="primary" onClick={() => setSelectedDoctor(doc)}>Edit</Button>
-                    <Button variant="contained" color="secondary" 
-                    onClick={() => {
-                      setOpenDialog(true);
-                      setDoctorToDelete(doc);
-                    }}
-                    
-                    >Delete</Button>
+              <Card key={doc._id} sx={{ mt: 2, mb: 2, mx: 1 }}>
+                <CardContent>
+                  <Typography variant="subtitle1" fontWeight="bold">{doc.name}</Typography>
+                  <Typography variant="body2">Specialization: {doc.specialization}</Typography>
+                  <Typography variant="body2">Working Hours: {doc.workingHours?.start} - {doc.workingHours?.end}</Typography>
+                  <Divider sx={{ my: 1 }} />
+                  <Stack direction="row" justifyContent="space-between" mt={1}>
+                    <Button variant="outlined" color="primary" onClick={() => setSelectedDoctor(doc)} size="small">Edit</Button>
+                    <Button variant="outlined" color="error" onClick={() => { setOpenDialog(true); setDoctorToDelete(doc); }} size="small">Delete</Button>
                   </Stack>
-                </TableCell>
-              </TableRow>
+                </CardContent>
+              </Card>
             ))
           ) : (
-            <TableRow>
-              <TableCell colSpan={5} align="center">No doctors available</TableCell>
-            </TableRow>
+            <Box sx={{ textAlign: 'center', py: 3 }}>
+              <Typography>No doctors available</Typography>
+            </Box>
           )}
-        </TableBody>
-      </Table>
+        </Box>
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Specialization</TableCell>
+              <TableCell>Working Hours</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {doctors.length > 0 ? (
+              doctors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((doc) => (
+                <TableRow key={doc._id}>
+                  <TableCell>{doc.name}</TableCell>
+                  <TableCell>{doc.specialization}</TableCell>
+                  <TableCell>{doc.workingHours?.start} - {doc.workingHours?.end}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" spacing={1}>
+                      <Button variant="contained" color="primary" onClick={() => setSelectedDoctor(doc)}>Edit</Button>
+                      <Button variant="contained" color="error" onClick={() => { setOpenDialog(true); setDoctorToDelete(doc); }}>Delete</Button>
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={4} align="center">No doctors available</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
+      
       <TablePagination
         component="div"
         count={doctors.length}
         page={page}
-        onPageChange={handleChangePage}
+        onPageChange={(_, newPage) => setPage(newPage)}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10));
+          setPage(0);
+        }}
+        rowsPerPageOptions={[5, 10, 25]}
       />
-
+      
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
@@ -145,12 +144,11 @@ const DoctorManagement = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenDialog(false)} color="primary">Cancel</Button>
-          <Button onClick={() => handleDelete(doctorToDelete?._id)} color="secondary">Delete</Button>
+          <Button onClick={() => handleDelete(doctorToDelete?._id)} color="error">Delete</Button>
         </DialogActions>
       </Dialog>
-
-      {selectedDoctor && <DoctorForm doctor={selectedDoctor} onClose={() => setSelectedDoctor(null)} setDoctors={handleAddOrUpdateDoctor} doctors={doctors} />}
-
+      
+      {selectedDoctor && <DoctorForm doctor={selectedDoctor} onClose={() => setSelectedDoctor(null)} setDoctors={fetchDoctors} />}
       <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </Box>
   );

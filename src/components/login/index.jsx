@@ -32,17 +32,21 @@ const AuthForm = () => {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
 
-    if (!data.image || data.image.size === 0) {
-      data.image = defaultImage;
+    if (previewImage) {
+      data.image = previewImage;
+    } else if (!data.image || data.image.size === 0) {
+      console.log('defulat image')
+      // data.image = defaultImage;
     }
 
     try {
+      console.log('new user data',data)
       const api = isSignUp ? registerUser : loginUser;
       const response = await api(data);
       const result = response.data;
       console.log('response',response);
       console.log('result',result.user);
-      if (response.status === 200) {
+      if (response.status >= 200 & response.status <= 300) {
         login(result.token,result.user)
         
         setNotification({ open: true, message: "Authentication successful!", severity: "success" });
@@ -51,6 +55,7 @@ const AuthForm = () => {
         setNotification({ open: true, message: result.data.message || "Authentication failed!", severity: "error" });
       }
     } catch (error) {
+      console.log ('message:', error.response.data.message)
       setNotification({ open: true, message: error.response.data.message, severity: "error" });
     } finally {
       setLoading(false);
@@ -59,7 +64,12 @@ const AuthForm = () => {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    const maxSize = 8* 1024 * 1024; // 5MB in bytes
     if (file) {
+      if (file.size > maxSize) {
+        alert("File size must be less than 8MB");
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewImage(reader.result);
@@ -102,14 +112,14 @@ const AuthForm = () => {
               <>
                 <TextField fullWidth margin="normal" label="Username" name="username" required />
                 <TextField fullWidth margin="normal" label="Phone Number" name="phoneNumber" required />
-                <input type="file" accept="image/*" onChange={handleImageUpload} name="image" style={{ marginTop: "10px" }} />
+                {/* <input type="file" accept="image/*" onChange={handleImageUpload} name="image" style={{ marginTop: "10px" }} />
                 {previewImage && (
                   <Avatar
                     src={previewImage}
                     alt="Preview"
                     sx={{ width: 80, height: 80, mt: 2, mx: "auto" }}
                   />
-                )}
+                )} */}
               </>
             )}
             <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }} disabled={loading}>

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { createAppointment, updateAppointment } from "../../services/api";
-import { TextField, Button, CircularProgress } from "@mui/material";
+import { TextField, Button, CircularProgress,Box } from "@mui/material";
 import Notification from "../Notification/index";
 import { AuthContext } from "../../context/AuthContext";
 import moment from "moment";
@@ -64,9 +64,38 @@ const AppointmentForm = ({ doctorId, selectedDate, selectedSlot, onClose, existi
         <TextField sx={{ m: 1 }} label="Patient Name" value={patientName} onChange={(e) => setPatientName(e.target.value)} fullWidth required />
         <TextField sx={{ m: 1 }} label="Appointment Type" value={appointmentType} onChange={(e) => setAppointmentType(e.target.value)} fullWidth required />
         <TextField sx={{ m: 1 }} label="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} fullWidth multiline rows={4} />
-        <Button sx={{ m: 1 }} type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : existingAppointment ? "Update Appointment" : "Book Appointment"}
-        </Button>
+        <Box sx={{
+  display: 'flex',
+  flexDirection: { xs: 'column', sm: 'row' },
+  justifyContent: { xs: 'center', sm: 'flex-end' },
+  alignItems: "center",
+  gap: 2,
+  mt: 2,
+  width: '100%'
+}}>
+  <Button 
+    sx={{ 
+      width: { xs: '100%', sm: 'auto' } 
+    }} 
+    type="submit" 
+    variant="contained" 
+    color="primary" 
+    disabled={loading}
+  >
+    {loading ? <CircularProgress size={24} /> : existingAppointment ? "Update Appointment" : "Book Appointment"}
+  </Button>
+  <Button 
+    onClick={onClose} 
+    color="error" 
+    variant="contained"
+    sx={{ 
+      width: { xs: '100%', sm: 'auto' } 
+    }}
+  > 
+    Cancel
+  </Button>
+</Box>
+       
       </form>
       <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </>

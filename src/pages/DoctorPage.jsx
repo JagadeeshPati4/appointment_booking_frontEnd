@@ -74,7 +74,7 @@ const DoctorPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 5, mb: 5 }}>
         <Paper elevation={3} sx={{ width: "80%", maxWidth: 600, p: 3, borderRadius: 2 }}>
           {loading ? (
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: 200 }}>
@@ -126,19 +126,15 @@ const DoctorPage = () => {
         <DialogTitle>Book Appointment</DialogTitle>
         <DialogContent>
         <AppointmentForm 
-  doctorId={id} 
-  selectedDate={selectedDate.format("YYYY-MM-DD")} 
-  selectedSlot={selectedSlot} 
-  onClose={handleAppointmentBooked} 
-  refreshAppointments={handleAppointmentBooked} // ✅ Pass the function
-/>
+         doctorId={id} 
+        selectedDate={selectedDate.format("YYYY-MM-DD")} 
+        selectedSlot={selectedSlot} 
+        onClose={handleAppointmentBooked} 
+        refreshAppointments={handleAppointmentBooked} // ✅ Pass the function
+        />
 
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary" variant="contained">
-            Cancel
-          </Button>
-        </DialogActions>
+       
       </Dialog>
       <Notification open={notification.open} message={notification.message} severity={notification.severity} onClose={() => setNotification({ ...notification, open: false })} />
     </Container>

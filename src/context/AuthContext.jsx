@@ -33,7 +33,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const login = (token,userDetails) => {
+  const login = (token,userFetchDetails) => {
+    const userDetails ={...userFetchDetails,'_id':userFetchDetails.id}
     console.log('token',token); 
     console.log('userDetails',userDetails);
     Cookies.set("userToken", token, { expires: 7 });

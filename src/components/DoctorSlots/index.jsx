@@ -35,7 +35,7 @@ const DoctorSlots = ({ doctorId, selectedDate, onSlotSelect }) => {
   }
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{justifyContent:'center'}}>
       {slots.map((slot) => (
         <Grid item key={slot}>
           <Button variant="outlined" onClick={() => onSlotSelect(slot)}>

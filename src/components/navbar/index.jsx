@@ -37,7 +37,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" sx={{ bgcolor: "#002400", px: 2, width: "98%" }}>
+      <AppBar position="static" sx={{ bgcolor: "#002400", px: 2, width:"100%" }}>
         <Toolbar>
           {/* Mobile Menu Icon */}
           <IconButton
